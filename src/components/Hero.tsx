@@ -4,8 +4,8 @@ import { Download, Apple, Monitor, ChevronDown, Check } from 'lucide-react';
 
 const DOWNLOAD_LINKS = {
   macOS: {
-    apple: 'https://mi.feishu.cn/file/SK5Wb0NX1oZRBCxl8R9ckOBdnRf,
-    intel: 'https://mi.feishu.cn/file/BaQybC85moVhizxOYajc26DGniW',
+    apple: 'https://mi.feishu.cn/file/G4ZTbtN84oXQkIxbTWscRArOnid',
+    intel: 'https://mi.feishu.cn/file/Wj8TbfZzfoevr6xxSwzcGqT0nfe',
   },
   windows: 'https://mi.feishu.cn/file/MFjabRFpAo0Z8yxiuKJc7uJmnef',
 };
