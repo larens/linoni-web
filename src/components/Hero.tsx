@@ -1,8 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Apple, Monitor } from 'lucide-react';
+import { Download, Apple, Monitor, ChevronDown, Check } from 'lucide-react';
+
+const DOWNLOAD_LINKS = {
+  macOS: {
+    apple: 'https://mi.feishu.cn/file/G4ZTbtN84oXQkIxbTWscRArOnid',
+    intel: 'https://mi.feishu.cn/file/Wj8TbfZzfoevr6xxSwzcGqT0nfe',
+  },
+  windows: 'https://mi.feishu.cn/file/MFjabRFpAo0Z8yxiuKJc7uJmnef',
+};
 
 const Hero: React.FC = () => {
+  const [chipType, setChipType] = useState<'apple' | 'intel'>('apple');
+
+  useEffect(() => {
+    // Detect Mac chip type on mount
+    const platform = navigator.platform.toLowerCase();
+    const isMac = platform.includes('mac');
+    if (isMac) {
+      const isAppleSilicon = platform.includes('arm') || navigator.userAgent.includes('Apple Silicon');
+      setChipType(isAppleSilicon ? 'apple' : 'intel');
+    }
+  }, []);
+
+  const macDownloadUrl = chipType ? DOWNLOAD_LINKS.macOS[chipType] : DOWNLOAD_LINKS.macOS.apple;
+
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-white dark:bg-gray-900">
       {/* Background decoration */}
@@ -30,20 +52,77 @@ const Hero: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="flex items-center justify-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Apple size={24} />
-              <div className="text-left">
-                <div className="text-xs opacity-80">Download on</div>
-                <div className="font-bold text-lg leading-none">macOS</div>
+            {/* macOS Download Button with Hover Chip Selector */}
+            <div className="relative group">
+              <a 
+                href={macDownloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 min-w-[200px]"
+              >
+                <Apple size={24} />
+                <div className="text-left">
+                  <div className="text-xs opacity-80">Download for</div>
+                  <div className="font-bold text-lg leading-none flex items-center gap-1">
+                    macOS 
+                    <ChevronDown 
+                      size={16} 
+                      className="transition-transform group-hover:rotate-180"
+                    />
+                  </div>
+                </div>
+              </a>
+              
+              {/* Hover Chip Type Selector Dropdown */}
+              <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden z-20 border border-gray-200 dark:border-gray-700">
+                  <a
+                    href={DOWNLOAD_LINKS.macOS.apple}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setChipType('apple')}
+                    className={`w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors block ${
+                      chipType === 'apple' ? 'bg-blue-50 dark:bg-blue-900/30' : ''
+                    }`}
+                  >
+                    <div>
+                      <div className="font-medium text-gray-900 dark:text-white">Apple 版本</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">M1/M2/M3/M4 芯片</div>
+                    </div>
+                    {chipType === 'apple' && <Check size={16} className="text-blue-600" />}
+                  </a>
+                  <a
+                    href={DOWNLOAD_LINKS.macOS.intel}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setChipType('intel')}
+                    className={`w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors block ${
+                      chipType === 'intel' ? 'bg-blue-50 dark:bg-blue-900/30' : ''
+                    }`}
+                  >
+                    <div>
+                      <div className="font-medium text-gray-900 dark:text-white">Intel 版本</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Core i5/i7/i9 处理器</div>
+                    </div>
+                    {chipType === 'intel' && <Check size={16} className="text-blue-600" />}
+                  </a>
+                </div>
               </div>
-            </button>
-            <button className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            </div>
+            
+            {/* Windows Download Button */}
+            <a 
+              href={DOWNLOAD_LINKS.windows}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
               <Monitor size={24} />
               <div className="text-left">
                 <div className="text-xs opacity-80">Download for</div>
                 <div className="font-bold text-lg leading-none">Windows</div>
               </div>
-            </button>
+            </a>
           </div>
           
           <div className="mt-8 text-sm text-gray-400 flex items-center gap-4">
@@ -60,7 +139,6 @@ const Hero: React.FC = () => {
           className="relative flex justify-center"
         >
           <div className="relative w-full max-w-md aspect-square flex items-center justify-center">
-            {/* 这里的图片路径假设图片已经在 public/images 下 */}
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-200 to-purple-200 rounded-full opacity-30 animate-pulse dark:opacity-10 blur-2xl transform scale-110" />
             <video 
               src="/videos/idle.mp4" 
