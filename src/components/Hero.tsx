@@ -1,29 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Apple, Monitor, ChevronDown, Check } from 'lucide-react';
+import { Download, Apple, Monitor } from 'lucide-react';
+import { DownloadButton, type DownloadOption } from './DownloadButton';
 
 const DOWNLOAD_LINKS = {
   macOS: {
-    apple: 'https://mi.feishu.cn/file/G4ZTbtN84oXQkIxbTWscRArOnid',
-    intel: 'https://mi.feishu.cn/file/Wj8TbfZzfoevr6xxSwzcGqT0nfe',
+    apple: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-mac-arm64.zip',
+    intel: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-mac-x64.zip',
   },
-  windows: 'https://productionresultssa3.blob.core.windows.net/actions-results/d9aaf4e3-9d2b-46bb-b000-11e3397a3af1/workflow-job-run-681b962e-0bde-54fc-a27e-3c2eab0a06d5/artifacts/3de56541502b6f0b7acc65ffb225e2b081fb8cce36585fd3c6220b600cbd3057.zip?rscd=attachment%3B+filename%3D%22LingrongCompanion-Windows.zip%22&rsct=application%2Fzip&se=2026-03-06T00%3A01%3A59Z&sig=gHeS%2FLSAERvB7eb1Hv%2Bh6Fi0nR6B1h1ga%2FtmcJaZrvE%3D&ske=2026-03-06T02%3A07%3A32Z&skoid=ca7593d4-ee42-46cd-af88-8b886a2f84eb&sks=b&skt=2026-03-05T22%3A07%3A32Z&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skv=2025-11-05&sp=r&spr=https&sr=b&st=2026-03-05T23%3A51%3A54Z&sv=2025-11-05',
+  windows: {
+    intel: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-win-x64-portable.exe.zip',
+    arm: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-win-arm64-portable.exe.zip',
+  },
+};
+
+const getInitialMacChipType = (): 'apple' | 'intel' => {
+  if (typeof navigator === 'undefined') return 'apple';
+  const platform = navigator.platform.toLowerCase();
+  const ua = navigator.userAgent.toLowerCase();
+  if (platform.includes('mac')) {
+    const isAppleSilicon = platform.includes('arm') || ua.includes('apple silicon');
+    return isAppleSilicon ? 'apple' : 'intel';
+  }
+  return 'apple';
+};
+
+const getInitialWinArch = (): 'intel' | 'arm' => {
+  if (typeof navigator === 'undefined') return 'intel';
+  const platform = navigator.platform.toLowerCase();
+  const ua = navigator.userAgent.toLowerCase();
+  if (platform.includes('win')) {
+    const isArm = ua.includes('arm64') || ua.includes('aarch64') || platform.includes('arm');
+    return isArm ? 'arm' : 'intel';
+  }
+  return 'intel';
 };
 
 const Hero: React.FC = () => {
-  const [chipType, setChipType] = useState<'apple' | 'intel'>('apple');
+  const [macChipType, setMacChipType] = useState<'apple' | 'intel'>(getInitialMacChipType);
+  const [winArch, setWinArch] = useState<'intel' | 'arm'>(getInitialWinArch);
 
-  useEffect(() => {
-    // Detect Mac chip type on mount
-    const platform = navigator.platform.toLowerCase();
-    const isMac = platform.includes('mac');
-    if (isMac) {
-      const isAppleSilicon = platform.includes('arm') || navigator.userAgent.includes('Apple Silicon');
-      setChipType(isAppleSilicon ? 'apple' : 'intel');
-    }
-  }, []);
+  const macOptions: DownloadOption[] = [
+    { id: 'apple', label: 'Apple 版本', subLabel: 'M1/M2/M3/M4 芯片', url: DOWNLOAD_LINKS.macOS.apple },
+    { id: 'intel', label: 'Intel 版本', subLabel: 'Core i5/i7/i9 处理器', url: DOWNLOAD_LINKS.macOS.intel }
+  ];
 
-  const macDownloadUrl = chipType ? DOWNLOAD_LINKS.macOS[chipType] : DOWNLOAD_LINKS.macOS.apple;
+  const winOptions: DownloadOption[] = [
+    { id: 'intel', label: 'Intel 版本', subLabel: 'x64 架构', url: DOWNLOAD_LINKS.windows.intel },
+    { id: 'arm', label: 'ARM 版本', subLabel: 'ARM64 架构', url: DOWNLOAD_LINKS.windows.arm }
+  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-white dark:bg-gray-900">
@@ -52,77 +77,23 @@ const Hero: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
-            {/* macOS Download Button with Hover Chip Selector */}
-            <div className="relative group">
-              <a 
-                href={macDownloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 min-w-[200px]"
-              >
-                <Apple size={24} />
-                <div className="text-left">
-                  <div className="text-xs opacity-80">Download for</div>
-                  <div className="font-bold text-lg leading-none flex items-center gap-1">
-                    macOS 
-                    <ChevronDown 
-                      size={16} 
-                      className="transition-transform group-hover:rotate-180"
-                    />
-                  </div>
-                </div>
-              </a>
-              
-              {/* Hover Chip Type Selector Dropdown */}
-              <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden z-20 border border-gray-200 dark:border-gray-700">
-                  <a
-                    href={DOWNLOAD_LINKS.macOS.apple}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setChipType('apple')}
-                    className={`w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors block ${
-                      chipType === 'apple' ? 'bg-blue-50 dark:bg-blue-900/30' : ''
-                    }`}
-                  >
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">Apple 版本</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">M1/M2/M3/M4 芯片</div>
-                    </div>
-                    {chipType === 'apple' && <Check size={16} className="text-blue-600" />}
-                  </a>
-                  <a
-                    href={DOWNLOAD_LINKS.macOS.intel}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setChipType('intel')}
-                    className={`w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors block ${
-                      chipType === 'intel' ? 'bg-blue-50 dark:bg-blue-900/30' : ''
-                    }`}
-                  >
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">Intel 版本</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Core i5/i7/i9 处理器</div>
-                    </div>
-                    {chipType === 'intel' && <Check size={16} className="text-blue-600" />}
-                  </a>
-                </div>
-              </div>
-            </div>
+            <DownloadButton
+              platformName="macOS"
+              Icon={Apple}
+              currentOptionId={macChipType}
+              options={macOptions}
+              onOptionSelect={(id) => setMacChipType(id as 'apple' | 'intel')}
+              variant="dark"
+            />
             
-            {/* Windows Download Button */}
-            <a 
-              href={DOWNLOAD_LINKS.windows}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
-              <Monitor size={24} />
-              <div className="text-left">
-                <div className="text-xs opacity-80">Download for</div>
-                <div className="font-bold text-lg leading-none">Windows</div>
-              </div>
-            </a>
+            <DownloadButton
+              platformName="Windows"
+              Icon={Monitor}
+              currentOptionId={winArch}
+              options={winOptions}
+              onOptionSelect={(id) => setWinArch(id as 'intel' | 'arm')}
+              variant="primary"
+            />
           </div>
           
           <div className="mt-8 text-sm text-gray-400 flex items-center gap-4">
