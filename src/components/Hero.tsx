@@ -7,7 +7,7 @@ const DOWNLOAD_LINKS = {
     apple: 'https://mi.feishu.cn/file/G4ZTbtN84oXQkIxbTWscRArOnid',
     intel: 'https://mi.feishu.cn/file/Wj8TbfZzfoevr6xxSwzcGqT0nfe',
   },
-  windows: 'https://mi.feishu.cn/file/MFjabRFpAo0Z8yxiuKJc7uJmnef',
+  windows: 'https://productionresultssa3.blob.core.windows.net/actions-results/d9aaf4e3-9d2b-46bb-b000-11e3397a3af1/workflow-job-run-681b962e-0bde-54fc-a27e-3c2eab0a06d5/artifacts/3de56541502b6f0b7acc65ffb225e2b081fb8cce36585fd3c6220b600cbd3057.zip?rscd=attachment%3B+filename%3D%22LingrongCompanion-Windows.zip%22&rsct=application%2Fzip&se=2026-03-06T00%3A01%3A59Z&sig=gHeS%2FLSAERvB7eb1Hv%2Bh6Fi0nR6B1h1ga%2FtmcJaZrvE%3D&ske=2026-03-06T02%3A07%3A32Z&skoid=ca7593d4-ee42-46cd-af88-8b886a2f84eb&sks=b&skt=2026-03-05T22%3A07%3A32Z&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skv=2025-11-05&sp=r&spr=https&sr=b&st=2026-03-05T23%3A51%3A54Z&sv=2025-11-05',
 };
 
 const Hero: React.FC = () => {
