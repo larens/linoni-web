@@ -1,7 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Apple, Monitor } from 'lucide-react';
 import { DownloadButton, type DownloadOption } from './DownloadButton';
+
+// Video format configuration interface
+interface VideoFormat {
+  src: string;
+  type: string;
+  codecs?: string;
+  priority: number; // Higher is better
+}
+
+// OS Platform detection
+type Platform = 'macOS' | 'Windows' | 'Other';
+
+const getPlatform = (): Platform => {
+  if (typeof navigator === 'undefined') return 'Other';
+  const platform = navigator.platform.toLowerCase();
+  const ua = navigator.userAgent.toLowerCase();
+  
+  if (platform.includes('mac') || ua.includes('mac os')) return 'macOS';
+  if (platform.includes('win') || ua.includes('windows')) return 'Windows';
+  return 'Other';
+};
+
+// Check video format support
+const checkVideoSupport = (type: string, codecs?: string): boolean => {
+  if (typeof document === 'undefined') return false;
+  const video = document.createElement('video');
+  const format = codecs ? `${type}; codecs="${codecs}"` : type;
+  const canPlay = video.canPlayType(format);
+  return canPlay === 'probably' || canPlay === 'maybe';
+};
+
+const useVideoSources = () => {
+  const [sources, setSources] = useState<VideoFormat[]>([]);
+  const [platform, setPlatform] = useState<Platform>('Other');
+
+  useEffect(() => {
+    const currentPlatform = getPlatform();
+    setPlatform(currentPlatform);
+
+    const mp4Format: VideoFormat = { 
+      src: '/videos/idle.mp4', 
+      type: 'video/mp4', 
+      priority: 1 
+    };
+    
+    const webmFormat: VideoFormat = { 
+      src: '/videos/idle.webm', 
+      type: 'video/webm', 
+      codecs: 'vp9',
+      priority: 2 
+    };
+
+    let selectedSources: VideoFormat[] = [];
+
+    // Platform-specific logic based on compatibility testing requirements
+    if (currentPlatform === 'macOS') {
+      // macOS: Default to MP4 for best performance and compatibility (Safari)
+      selectedSources = [mp4Format];
+    } else if (currentPlatform === 'Windows') {
+      // Windows: Check WebM (VP9) support first, fallback to MP4
+      // This dynamic selection ensures better quality/transparency where supported (modern browsers)
+      // while maintaining compatibility with older systems (IE11/Legacy Edge)
+      const supportsWebM = checkVideoSupport(webmFormat.type, webmFormat.codecs);
+      
+      if (supportsWebM) {
+        selectedSources = [webmFormat, mp4Format];
+      } else {
+        selectedSources = [mp4Format, webmFormat];
+      }
+    } else {
+      // Other platforms (Linux, Android, etc.): Default standard behavior
+      selectedSources = [webmFormat, mp4Format];
+    }
+
+    setSources(selectedSources);
+  }, []);
+
+  return { sources, platform };
+};
 
 const DOWNLOAD_LINKS = {
   macOS: {
@@ -49,6 +128,8 @@ const Hero: React.FC = () => {
     { id: 'intel', label: 'Intel 版本', subLabel: 'x64 架构', url: DOWNLOAD_LINKS.windows.intel },
     { id: 'arm', label: 'ARM 版本', subLabel: 'ARM64 架构', url: DOWNLOAD_LINKS.windows.arm }
   ];
+
+  const { sources, platform } = useVideoSources();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-white dark:bg-gray-900">
@@ -110,15 +191,21 @@ const Hero: React.FC = () => {
           className="relative flex justify-center"
         >
           <div className="relative w-full max-w-md aspect-square flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-200 to-purple-200 rounded-full opacity-30 animate-pulse dark:opacity-10 blur-2xl transform scale-110" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-200 to-purple-200 rounded-full opacity-30 dark:opacity-10 blur-2xl" />
             <video 
-              src="/videos/idle.mp4" 
               autoPlay 
               loop 
               muted 
               playsInline
-              className="relative z-10 w-full h-auto drop-shadow-2xl rounded-2xl transform hover:scale-105 transition-transform duration-500"
-            />
+              className="relative z-10 w-full h-auto drop-shadow-2xl rounded-2xl mix-blend-screen"
+              key={platform} // Force re-render on platform change (hydration mismatch prevention)
+            >
+              {sources.map((source) => (
+                <source key={source.src} src={source.src} type={source.type} />
+              ))}
+              {/* Fallback for older browsers */}
+              <source src="/videos/idle.mp4" type="video/mp4" />
+            </video>
           </div>
         </motion.div>
       </div>
