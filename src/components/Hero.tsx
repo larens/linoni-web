@@ -80,12 +80,12 @@ const useVideoSources = () => {
 
 const DOWNLOAD_LINKS = {
   macOS: {
-    apple: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-mac-arm64.zip',
-    intel: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-mac-x64.zip',
+    apple: 'https://download.linoni.cn/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-3.0.1-mac-arm64.zip',
+    intel: 'https://download.linoni.cn/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-3.0.1-mac-x64.zip',
   },
   windows: {
-    intel: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-win-x64-portable.exe.zip',
-    arm: 'https://linoni-1255984696.cos.ap-beijing.myqcloud.com/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-2.1.1-win-arm64-portable.exe.zip',
+    intel: 'https://download.linoni.cn/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-3.0.1-win-x64-portable.exe',
+    arm: 'https://download.linoni.cn/%E7%81%B5%E7%BB%92%E9%99%AA%E4%BC%B4%E7%B2%BE%E7%81%B5-3.0.1-win-x64-portable.exe',
   },
 };
 
