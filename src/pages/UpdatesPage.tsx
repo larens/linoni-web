@@ -1,62 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-
-interface UpdateItem {
-  version: string;
-  date: string;
-  features: {
-    type: 'new' | 'fix' | 'optimize';
-    content: string;
-  }[];
-}
-
-const updates: UpdateItem[] = [
-  {
-    version: 'v2.1.0',
-    date: '2026/03/01',
-    features: [
-      { type: 'new', content: '新增云端同步服务，支持多设备数据互通' },
-      { type: 'new', content: '新增直接对接 🦞OpenClaw服务，让你的宠物成为你的智能助手' },
-      { type: 'optimize', content: '重构了数据同步逻辑，移除离线缓存模块以提升稳定性' }
-    ]
-  },
-  {
-    version: 'v2.0.0',
-    date: '2026/02/28',
-    features: [
-      { type: 'new', content: 'Memu 记忆系统核心上线，灵绒拥有了更长久的记忆' },
-      { type: 'new', content: '全面适配深色模式 (Dark Mode)，夜晚陪伴更护眼' },
-      { type: 'optimize', content: '提升了大模型对话的稳定性与响应速度' },
-      { type: 'fix', content: '增强了文件上传的安全性检测' }
-    ]
-  },
-  {
-    version: 'v1.2.0',
-    date: '2026/02/25',
-    features: [
-      { type: 'new', content: '新增 MBTI 性格分析维度，支持 E/I、S/N、T/F、J/P 八大动态维度实时调整' },
-      { type: 'optimize', content: '优化了日记生成的逻辑，现在能更准确地捕捉当天情绪' },
-      { type: 'fix', content: '修复了偶尔无法读取配置文件的 Bug' }
-    ]
-  },
-  {
-    version: 'v1.1.0',
-    date: '2026/02/10',
-    features: [
-      { type: 'new', content: '新增“打工”系统，让宠物也能赚取金币' },
-      { type: 'new', content: '新增 macOS 菜单栏常驻模式' },
-      { type: 'optimize', content: '大幅降低了待机时的内存占用' }
-    ]
-  },
-  {
-    version: 'v1.0.0',
-    date: '2026/01/01',
-    features: [
-      { type: 'new', content: '灵绒陪伴精灵正式发布！' },
-      { type: 'new', content: '支持 macOS (Intel & Apple Silicon) 和 Windows 10/11' }
-    ]
-  }
-];
+import { updates } from '../data/updates';
 
 const UpdatesPage: React.FC = () => {
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Apple, Monitor } from 'lucide-react';
 import { DownloadButton, type DownloadOption } from './DownloadButton';
@@ -34,13 +34,9 @@ const checkVideoSupport = (type: string, codecs?: string): boolean => {
 };
 
 const useVideoSources = () => {
-  const [sources, setSources] = useState<VideoFormat[]>([]);
-  const [platform, setPlatform] = useState<Platform>('Other');
+  const [platform] = useState<Platform>(() => getPlatform());
 
-  useEffect(() => {
-    const currentPlatform = getPlatform();
-    setPlatform(currentPlatform);
-
+  const sources = useMemo(() => {
     const mp4Format: VideoFormat = { 
       src: '/videos/idle.mp4', 
       type: 'video/mp4', 
@@ -57,10 +53,10 @@ const useVideoSources = () => {
     let selectedSources: VideoFormat[] = [];
 
     // Platform-specific logic based on compatibility testing requirements
-    if (currentPlatform === 'macOS') {
+    if (platform === 'macOS') {
       // macOS: Default to MP4 for best performance and compatibility (Safari)
       selectedSources = [mp4Format];
-    } else if (currentPlatform === 'Windows') {
+    } else if (platform === 'Windows') {
       // Windows: Check WebM (VP9) support first, fallback to MP4
       // This dynamic selection ensures better quality/transparency where supported (modern browsers)
       // while maintaining compatibility with older systems (IE11/Legacy Edge)
@@ -76,8 +72,8 @@ const useVideoSources = () => {
       selectedSources = [webmFormat, mp4Format];
     }
 
-    setSources(selectedSources);
-  }, []);
+    return selectedSources;
+  }, [platform]);
 
   return { sources, platform };
 };
