@@ -34,7 +34,7 @@ const Footer: React.FC = () => {
               rel="noopener noreferrer"
               className="text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
             >
-              津ICP备2026002115号-2
+              <span>（津ICP备2026002115号-2）</span>
             </a>
             </p>
             
