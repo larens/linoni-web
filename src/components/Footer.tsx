@@ -28,8 +28,16 @@ const Footer: React.FC = () => {
               <span className="font-bold text-gray-700 dark:text-gray-300">Linoni</span>
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-500">
-              © {new Date().getFullYear()} Larens. All rights reserved.
+              © {new Date().getFullYear()} Larens. All rights reserved.<a
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300"
+            >
+              津ICP备2026002115号-2
+            </a>
             </p>
+            
           </div>
 
           <div className="flex space-x-6">
@@ -71,10 +79,6 @@ const Footer: React.FC = () => {
               </AnimatePresence>
             </div>
           </div>
-        </div>
-        
-        <div className="mt-8 text-center text-xs text-gray-400">
-          <p>Made with ❤️ by Larens</p>
         </div>
       </div>
     </footer>
